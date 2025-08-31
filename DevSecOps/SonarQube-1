@@ -1,0 +1,50 @@
+### **What is SonarCloud?**
+
+- **SonarCloud** is a cloud-based service for **continuous code quality and security analysis**.
+- It automatically scans code for:
+    - **Bugs**
+    - **Code smells**
+    - **Vulnerabilities**
+    - **Security hotspots**
+    - **Code coverage & duplications**
+- Works with major **languages** like Java, Python, C#, JavaScript, and frameworks like Maven, Gradle, .NET, etc
+
+### **Typical DevSecOps Pipeline with SonarCloud**
+
+Here’s a sample **pipeline flow**:
+
+1. **Code Development**
+    - Developer writes code.
+    - Optional: **SonarLint** checks in IDE.
+2. **Pre-commit / PR Scan**
+    - CI pipeline triggers SonarCloud scan.
+    - Checks **Quality Gate** (fails build if thresholds not met).
+3. **Build & Test**
+    - Build artifacts created.
+    - Unit tests and integration tests run.
+4. **SonarCloud Analysis**
+    - Scan for vulnerabilities, bugs, security hotspots.
+    - Results shown in **SonarCloud dashboard**.
+5. **Merge / Deployment**
+    - Only code passing **Quality Gate** moves to production.
+
+## **SonarCloud Account Setup**
+
+1. **Sign Up / Login** https://www.sonarsource.com/products/sonarcloud/signup/
+    - Go to SonarCloud.
+    - You can sign up using:
+        - **GitHub**
+        - **Bitbucket**
+        - **GitLab**
+        - **Azure DevOps**
+    - For DevSecOps pipelines, **GitHub is the most common**.
+2. **Organization Creation**
+    - After login, create an **organization**:
+        - Name: e.g., `my-org`
+        - Link it to your GitHub/Bitbucket account.
+    - Organization manages multiple projects.
+
+Note: SonarCloud is SaaS, so no local server installation is needed. Only scanner installation in your CI/CD is require
+
+
+  
