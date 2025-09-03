@@ -1,14 +1,14 @@
-Project Overview
+**Project Overview**
 
 This project demonstrates the integration of Snyk Software Composition Analysis (SCA) into a CI/CD pipeline using GitHub Actions for a Maven-based Java application. The goal is to identify and manage open-source dependency vulnerabilities as part of a mature DevSecOps practice, ensuring security is embedded early in the software development lifecycle (Shift-Left security).
 
-Implementation Highlights for Mature DevSecOps
+**Implementation Highlights for Mature DevSecOps**
 
-Automated SCA Scan with Snyk:
+**Automated SCA Scan with Snyk:**
 
 Detects known vulnerabilities in open-source libraries during every push, pull request, or manual trigger.
 
-Custom Quality Gates:
+**Custom Quality Gates:**
 
 Pipeline enforces security thresholds:
 
@@ -16,7 +16,7 @@ Fail build if any Critical vulnerabilities exist.
 
 Fail build if High severity > 5.
 
-Centralized Reporting:
+**Centralized Reporting:**
 
 Uploads SARIF reports to GitHub Security tab for visibility.
 
@@ -39,7 +39,7 @@ After login, go to Account Settings → API Token.
 
 Copy your API Token (this is your SNYK_TOKEN).
 
- Step 2: Add SNYK_TOKEN to GitHub Secrets
+** Step 2: Add SNYK_TOKEN to GitHub Secrets**
 
 Navigate to your repo → Settings → Secrets and variables → Actions.
 
@@ -51,7 +51,7 @@ Value: (paste your Snyk API token)
 
 Save it.
 
- Step 3: Add Vulnerable Dependency (for Testing)
+** Step 3: Add Vulnerable Dependency (for Testing)**
 
 Edit your pom.xml (or sub-module) and add a known vulnerable dependency like:
 
@@ -100,7 +100,7 @@ Edit your pom.xml (or sub-module) and add a known vulnerable dependency like:
 
 Commit and push.
 
- Step 4: Create GitHub Actions Workflow
+** Step 4: Create GitHub Actions Workflow**
 
 In your repo, create this file:
 
@@ -176,13 +176,13 @@ jobs:
         if: always()
         run: snyk monitor --file=pom.xml || true
 
- Step 5: Trigger the Workflow
+** Step 5: Trigger the Workflow**
 
 Push changes to main OR
 
 Go to Actions tab → Select Snyk Security Scan → Click Run workflow.
 
- Step 6: Check Outputs
+** Step 6: Check Outputs**
 
 GitHub Actions Logs:
 
@@ -213,7 +213,7 @@ Add this to the jobs.snyk-scan level:
 continue-on-error: true
 
 
-This will mark the job as failed but continue the workflow.
+**This will mark the job as failed but continue the workflow.
 
  What This Setup Provides
 
@@ -221,7 +221,7 @@ This will mark the job as failed but continue the workflow.
 ✔ Upload SARIF to GitHub Security tab
 ✔ Monitor results in Snyk Dashboard
 ✔ Custom Quality Gate enforcement
-✔ Manual trigger + PR/Push automation
+✔ Manual trigger + PR/Push automation**
 
 
 <img width="1867" height="575" alt="image" src="https://github.com/user-attachments/assets/af0518ce-c026-4f3d-88b8-ac8530ab0c77" />
@@ -229,7 +229,7 @@ This will mark the job as failed but continue the workflow.
 <img width="1882" height="862" alt="image" src="https://github.com/user-attachments/assets/b9e59d78-a197-4550-bbdf-0676f7f8573d" />
 
 
-Complete Project :
+**Complete Project :**
 https://github.com/jeetCl/SCA-Synk-1
 
 
