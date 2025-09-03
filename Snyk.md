@@ -7,7 +7,7 @@ After login, go to Account Settings → API Token.
 
 Copy your API Token (this is your SNYK_TOKEN).
 
-✅ Step 2: Add SNYK_TOKEN to GitHub Secrets
+ Step 2: Add SNYK_TOKEN to GitHub Secrets
 
 Navigate to your repo → Settings → Secrets and variables → Actions.
 
@@ -19,20 +19,56 @@ Value: (paste your Snyk API token)
 
 Save it.
 
-✅ Step 3: Add Vulnerable Dependency (for Testing)
+ Step 3: Add Vulnerable Dependency (for Testing)
 
 Edit your pom.xml (or sub-module) and add a known vulnerable dependency like:
 
-<dependency>
-    <groupId>commons-collections</groupId>
-    <artifactId>commons-collections</artifactId>
-    <version>3.2.1</version> <!-- Known vulnerable -->
-</dependency>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>vulnerable-sample</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <name>Vulnerable Sample Project</name>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <!-- Old Gson version (low severity issues) -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.2.4</version>
+        </dependency>
+
+        <!-- Old Commons IO (low severity issue) -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
+
+        <!-- Old JUnit (low severity CVEs) -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
 
 
 Commit and push.
 
-✅ Step 4: Create GitHub Actions Workflow
+ Step 4: Create GitHub Actions Workflow
 
 In your repo, create this file:
 
@@ -51,11 +87,11 @@ on:
   pull_request:
 
 jobs:
-  snyk-scan:
+  snyk:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: . # root where pom.xml exists
+        working-directory: . # root (where pom.xml exists)
 
     steps:
       - name: Checkout code
@@ -73,50 +109,48 @@ jobs:
       - name: Authenticate Snyk
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
 
-      # ✅ Run Snyk test (JSON + SARIF for analysis)
+      #  Run Snyk test and save JSON for quality gate check
       - name: Snyk Test (JSON + SARIF)
         id: snyk-test
         run: |
           snyk test --file=pom.xml --json > snyk.json || true
           snyk test --file=pom.xml --sarif-file-output=snyk.sarif || true
 
-      # ✅ Upload SARIF report for GitHub Security tab
-      - name: Upload SARIF to GitHub Security Tab
+      #  Upload SARIF report (always run)
+      - name: Upload SARIF report
         if: always()
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: snyk.sarif
 
-      # ✅ Apply custom quality gate: Fail if Critical > 0 OR High > 5
-      - name: Apply Custom Quality Gate
+      #  Apply Custom Quality Gate
+      - name: Apply Quality Gate (Critical > 0 OR High > 5)
         run: |
-          sudo apt-get update && sudo apt-get install -y jq
-          
           CRITICAL=$(jq '.vulnerabilities | map(select(.severity=="critical")) | length' snyk.json)
           HIGH=$(jq '.vulnerabilities | map(select(.severity=="high")) | length' snyk.json)
 
-          echo "Found $CRITICAL Critical vulnerabilities"
-          echo "Found $HIGH High vulnerabilities"
+          echo "Found $CRITICAL critical vulnerabilities"
+          echo "Found $HIGH high vulnerabilities"
 
           if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 5 ]; then
-            echo "❌ Quality Gate Failed: $CRITICAL Critical and $HIGH High vulnerabilities"
+            echo " Quality Gate Failed: $CRITICAL critical and $HIGH high vulnerabilities"
             exit 1
           else
-            echo "✅ Quality Gate Passed: $CRITICAL Critical and $HIGH High vulnerabilities"
+            echo " Quality Gate Passed: $CRITICAL critical and $HIGH high vulnerabilities"
           fi
 
-      # ✅ Send results to Snyk Dashboard (always run)
+      #  Monitor (always run, even if previous step failed)
       - name: Snyk Monitor
         if: always()
         run: snyk monitor --file=pom.xml || true
 
-✅ Step 5: Trigger the Workflow
+ Step 5: Trigger the Workflow
 
 Push changes to main OR
 
 Go to Actions tab → Select Snyk Security Scan → Click Run workflow.
 
-✅ Step 6: Check Outputs
+ Step 6: Check Outputs
 
 GitHub Actions Logs:
 
@@ -132,7 +166,7 @@ Snyk Dashboard:
 
 Go to Projects → Your repo appears with vulnerabilities.
 
-✅ Quality Gate Logic:
+ Quality Gate Logic:
 
 Fail if any Critical vulnerabilities exist.
 
@@ -140,7 +174,7 @@ Fail if more than 5 High vulnerabilities.
 
 Pass otherwise.
 
-✅ Optional: Allow other jobs to run even if this fails
+ Optional: Allow other jobs to run even if this fails
 
 Add this to the jobs.snyk-scan level:
 
@@ -149,10 +183,21 @@ continue-on-error: true
 
 This will mark the job as failed but continue the workflow.
 
-✅ What This Setup Provides
+ What This Setup Provides
 
 ✔ Snyk SCA scan for Maven project
 ✔ Upload SARIF to GitHub Security tab
 ✔ Monitor results in Snyk Dashboard
 ✔ Custom Quality Gate enforcement
 ✔ Manual trigger + PR/Push automation
+
+
+<img width="1867" height="575" alt="image" src="https://github.com/user-attachments/assets/af0518ce-c026-4f3d-88b8-ac8530ab0c77" />
+<img width="1918" height="782" alt="image" src="https://github.com/user-attachments/assets/8619dd62-9fc4-45d9-859b-ff812395385b" />
+<img width="1882" height="862" alt="image" src="https://github.com/user-attachments/assets/b9e59d78-a197-4550-bbdf-0676f7f8573d" />C
+
+
+Complete Project :
+https://github.com/jeetCl/SCA-Synk-1
+
+
