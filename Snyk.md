@@ -1,4 +1,36 @@
-Step 1: Create a Snyk Account
+Project Overview
+
+This project demonstrates the integration of Snyk Software Composition Analysis (SCA) into a CI/CD pipeline using GitHub Actions for a Maven-based Java application. The goal is to identify and manage open-source dependency vulnerabilities as part of a mature DevSecOps practice, ensuring security is embedded early in the software development lifecycle (Shift-Left security).
+
+Implementation Highlights for Mature DevSecOps
+
+Automated SCA Scan with Snyk:
+
+Detects known vulnerabilities in open-source libraries during every push, pull request, or manual trigger.
+
+Custom Quality Gates:
+
+Pipeline enforces security thresholds:
+
+Fail build if any Critical vulnerabilities exist.
+
+Fail build if High severity > 5.
+
+Centralized Reporting:
+
+Uploads SARIF reports to GitHub Security tab for visibility.
+
+Sends results to Snyk Dashboard for centralized vulnerability management.
+
+Continuous Monitoring:
+
+Snyk Monitor enables ongoing tracking of dependencies for new vulnerabilities post-build.
+
+Scalable & Secure CI/CD:
+
+Uses GitHub Actions secrets for API tokens.
+
+Supports multi-module Maven projects without requiring a buildStep 1: Create a Snyk Account
 
 Go to https://snyk.io
  and sign up (or log in).
@@ -194,7 +226,7 @@ This will mark the job as failed but continue the workflow.
 
 <img width="1867" height="575" alt="image" src="https://github.com/user-attachments/assets/af0518ce-c026-4f3d-88b8-ac8530ab0c77" />
 <img width="1918" height="782" alt="image" src="https://github.com/user-attachments/assets/8619dd62-9fc4-45d9-859b-ff812395385b" />
-<img width="1882" height="862" alt="image" src="https://github.com/user-attachments/assets/b9e59d78-a197-4550-bbdf-0676f7f8573d" />C
+<img width="1882" height="862" alt="image" src="https://github.com/user-attachments/assets/b9e59d78-a197-4550-bbdf-0676f7f8573d" />
 
 
 Complete Project :
