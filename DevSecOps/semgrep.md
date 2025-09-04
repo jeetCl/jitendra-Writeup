@@ -60,33 +60,7 @@ Update your `semgrep.yml` workflow to include authentication:
 > You can also use an existing repo.
 Below is a simple GitHub Actions workflow YAML that runs Semgrep with authentication:
 
-on:
-  workflow_dispatch: {}
-  pull_request: {}
-  push:
-    branches:
-    - main
-    - master
-    paths:
-    - .github/workflows/semgrep.yml
-  schedule:
-
-  - cron: 28 0 * * *
-name: Semgrep
-jobs:
-  semgrep:
-    name: semgrep/ci
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    env:
-      SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
-    container:
-      image: semgrep/semgrep
-    steps:
-    - uses: actions/checkout@v4
-    - run: semgrep ci
-
+**https://github.com/jeetCl/semgrep/blob/master/.github/workflows/semgrep.yml**
 
 ### Explanation:
 
